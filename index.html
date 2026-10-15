@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#06194d">
+<title>Vua Tiếng Việt — Thử thách</title>
+<style>
+:root{--bg:#06194d;--panel:#102b70;--gold:#ffd43b;--mint:#50ffe1;--pink:#ff85cf;--ink:#fffdf6;--muted:#d5e7ff}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;overflow-x:hidden;font-family:system-ui,Arial,sans-serif;color:var(--ink);background:radial-gradient(ellipse at 50% 30%,#1767b5,#092c78 42%,#02082b 100%);background-attachment:fixed}
+button,input{font:inherit}button{cursor:pointer;touch-action:manipulation}
+.wrap{max-width:1180px;margin:auto;padding:18px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.audio{background:#101d58;border:2px solid #584bff;border-radius:16px;padding:10px 14px;min-width:220px;box-shadow:0 0 18px #292cff55}
+.audio-title{display:flex;align-items:center;gap:8px;font-weight:800}
+.toggle{margin-left:auto;width:48px;height:27px;border:0;border-radius:30px;background:#45516f;padding:3px}
+.toggle span{display:block;width:21px;height:21px;background:white;border-radius:50%;transition:.2s}
+.toggle[aria-pressed=true]{background:#00ce86}
+.toggle[aria-pressed=true] span{transform:translateX(21px)}
+.slider{display:flex;align-items:center;gap:8px;margin-top:7px;font-size:12px}
+.slider input{width:100%;accent-color:var(--gold)}
+.logo{text-align:center;flex:1;min-width:220px}
+.crown{font-size:35px;line-height:1}
+.brand{font-size:clamp(28px,4vw,55px);font-weight:1000;line-height:1;color:var(--gold);-webkit-text-stroke:1px #8f2409;text-shadow:3px 4px 0 #a83205}
+.ribbon{display:inline-block;margin-top:5px;padding:5px 16px;background:linear-gradient(#2edaff,#0872f4);border:3px solid var(--gold);border-radius:10px 10px 20px 20px;font-weight:1000;font-size:clamp(17px,2vw,27px)}
+.motto{font-size:12px;font-weight:900;margin-top:5px}
+.highscore{display:flex;align-items:center;gap:10px;background:#071849;border:2px solid #1769ff;border-radius:17px;padding:10px 14px}
+.highscore .star{font-size:30px}.highscore strong{display:block;font-size:12px}.highscore b{color:var(--gold);font-size:23px}
+.tool{width:47px;height:47px;border:2px solid #245bd2;border-radius:50%;background:#081b4b;color:white;font-size:22px}
+.modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin:30px 0 20px}
+.mode{position:relative;overflow:hidden;min-height:280px;padding:25px;border:3px solid #ffb52e;border-radius:25px;box-shadow:0 9px 0 #7c330d,0 0 20px #ffbd3055;text-align:center;color:#fff;background:radial-gradient(circle at 10% 85%,#ff8d17 0 5%,transparent 28%),linear-gradient(145deg,#ffce48,#ff8b18 70%,#d94b13);transition:.2s}
+.mode:before{content:"";position:absolute;inset:7px;border:1px solid #fff7a0;border-radius:18px;pointer-events:none}
+.mode:hover{transform:translateY(-4px)}
+.mode .emoji{font-size:58px}.mode h2{font-size:25px;margin:12px 0 7px}.mode p{line-height:1.5;margin:0}
+.tag{display:inline-block;margin-top:16px;padding:7px 13px;border-radius:20px;background:#7d260d;color:#ffed91;font-weight:900;font-size:12px}
+.game{display:none;background:#102b70f2;border:2px solid #5077db;border-radius:24px;padding:clamp(15px,4vw,28px);box-shadow:0 15px 45px #0005}
+.game.active{display:block}
+.gamebar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;color:var(--muted)}
+.progress{height:9px;background:#07163f;border-radius:20px;overflow:hidden;margin:15px 0 20px}
+.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--mint),var(--gold));transition:width .3s}
+.question{text-align:center}.question h2{font-size:clamp(21px,4vw,32px);margin:10px 0}
+.hint{color:var(--muted);margin-bottom:18px}
+.clue{min-height:160px;display:flex;align-items:center;justify-content:center;gap:clamp(10px,3vw,24px);flex-wrap:wrap;margin:15px auto 22px;padding:18px;border-radius:20px;background:linear-gradient(135deg,#07163f,#203a7b);border:1px solid #3c69c4;max-width:700px}
+.picture{font-size:clamp(45px,10vw,90px);filter:drop-shadow(0 7px 9px #0005)}
+.symbol{font-size:35px;color:var(--gold);font-weight:1000}
+.wordtile{font-size:clamp(20px,4vw,34px);font-weight:1000;letter-spacing:2px;padding:12px 15px;background:#303d70;border-radius:12px;border-bottom:4px solid #101831}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:700px;margin:auto}
+.choice{display:flex;align-items:center;gap:12px;min-height:58px;padding:12px;border-radius:14px;border:1px solid #6b83c7;background:#091b4c;color:white;text-align:left;font-weight:800}
+.letter{display:grid;place-items:center;flex:0 0 34px;height:34px;border-radius:10px;background:#303d70;color:var(--gold)}
+.choice:disabled{opacity:1}.choice.correct{border-color:var(--mint);background:#153e43}.choice.wrong{border-color:var(--pink);background:#49243d}
+.answerrow{display:flex;gap:9px;max-width:600px;margin:18px auto 0}
+.answerrow input{min-width:0;flex:1;background:#07163f;border:1px solid #6b83c7;border-radius:13px;color:white;padding:14px}
+.btn{border:1px solid #6b83c7;background:#17316e;color:white;padding:11px 16px;border-radius:13px;font-weight:800}
+.btn.primary{background:linear-gradient(120deg,#f8bd4d,#ffdc7d);color:#1c2340;border:0}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.feedback{min-height:32px;margin:14px 0 4px;text-align:center;font-weight:800}
+.good{color:var(--mint)}.bad{color:var(--pink)}
+.gamefoot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+.small{font-size:13px;color:var(--muted)}
+.end{text-align:center;padding:30px 10px}.end .big{font-size:65px}.end h2{font-size:32px}
+.hide{display:none!important}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:10}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:12;background:#152044;border:1px solid var(--mint);padding:11px 18px;border-radius:14px;font-weight:900;display:none}
+.toast.show{display:block}
+.note{text-align:center;color:#98b7f5;font-size:12px;margin:25px 0}
+@media(max-width:650px){.wrap{padding:12px}.top{justify-content:center}.logo{order:-1;flex-basis:100%}.audio{min-width:200px;flex:1}.highscore{padding:8px}.modes{grid-template-columns:1fr;gap:17px;margin-top:22px}.mode{min-height:220px;padding:20px}.choices{grid-template-columns:1fr}.answerrow{flex-direction:column}.answerrow .btn{width:100%}.gamefoot .btn{flex:1}}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<div class="toast" id="toast"></div>
+<main class="wrap">
+<header class="top">
+  <div class="audio">
+    <div class="audio-title">🎵 Nhạc nền
+      <button class="toggle" id="musicBtn" aria-pressed="false" aria-label="Bật tắt nhạc"><span></span></button>
+    </div>
+    <div class="slider">Âm lượng <input id="musicVolume" type="range" min="0" max="100" value="90"><span id="musicVolLabel">90%</span></div>
+    <div class="audio-title" style="margin-top:8px">🔊 Hiệu ứng
+      <button class="toggle" id="soundBtn" aria-pressed="true" aria-label="Bật tắt hiệu ứng"><span></span></button>
+    </div>
+    <div class="slider">Âm lượng <input id="sfxVolume" type="range" min="0" max="100" value="70"><span id="sfxVolLabel">70%</span></div>
+  </div>
+  <div class="logo">
+    <div class="crown">👑</div>
+    <div class="brand">VUA TIẾNG VIỆT</div>
+    <div class="ribbon">THỬ THÁCH</div>
+    <div class="motto">🧠 VẬN DỤNG TRÍ TUỆ — CHINH PHỤC TIẾNG VIỆT 🧠</div>
+  </div>
+  <div class="highscore"><span class="star">🏆</span><div><strong>ĐIỂM CAO NHẤT</strong><b id="highScore">0</b></div></div>
+  <button class="tool" id="helpBtn" title="Hướng dẫn">?</button>
+  <button class="tool" id="settingsBtn" title="Cài đặt">⚙</button>
+</header>
+
+<section id="home">
+  <div class="modes">
+    <button class="mode" data-mode="hard">
+      <div class="emoji">🧠</div>
+      <h2>THỬ THÁCH TRÍ TUỆ</h2>
+      <p>Giải câu đố tiếng Việt, kiến thức và thành ngữ. Cẩn thận với những câu hỏi đánh lừa bạn!</p>
+      <span class="tag">🔥 CHẾ ĐỘ KHÓ</span>
+    </button>
+    <button class="mode" data-mode="rebus">
+      <div class="emoji">🖼️</div>
+      <h2>ĐUỔI HÌNH BẮT CHỮ</h2>
+      <p>Quan sát hình ảnh, liên tưởng và tìm đáp án đúng. Hãy vận dụng trí tưởng tượng của bạn!</p>
+      <span class="tag">💎 SIÊU KHÓ</span>
+    </button>
+  </div>
+  <p class="note">✨ Trả lời đúng để ghi điểm • Dùng gợi ý khi cần • Chúc bạn chơi vui vẻ!</p>
+</section>
+
+<section class="game" id="game">
+  <div class="gamebar">
+    <span id="modeName">Chế độ</span>
+    <span id="count">Câu 1/20</span>
+    <span id="score">Điểm: 0</span>
+    <button class="btn" id="homeBtn">⌂ Trang chủ</button>
+  </div>
+  <div class="progress"><span id="bar"></span></div>
+  <div id="questionArea">
+    <div class="question"><h2 id="qTitle"></h2><p class="hint" id="qHint"></p></div>
+    <div class="clue" id="clue"></div>
+    <div class="choices" id="choices"></div>
+    <form class="answerrow" id="answerForm">
+      <input id="answer" autocomplete="off" placeholder="Hoặc nhập đáp án của bạn...">
+      <button class="btn primary" type="submit">Trả lời ↗</button>
+    </form>
+    <div class="feedback" id="feedback"></div>
+    <div class="gamefoot">
+      <button class="btn" id="hintBtn">💡 Gợi ý</button>
+      <span class="small">Đúng được 10 điểm, dùng gợi ý được 6 điểm.</span>
+      <button class="btn primary hide" id="nextBtn">Câu tiếp theo ➜</button>
+    </div>
+  </div>
+  <div class="end hide" id="endArea">
+    <div class="big">🏆</div><h2>HOÀN THÀNH!</h2>
+    <p id="resultText"></p>
+    <button class="btn primary" id="againBtn">🔄 Chơi lại</button>
+    <button class="btn" id="homeBtn2">⌂ Trang chủ</button>
+  </div>
+</section>
+<p class="note">VUA TIẾNG VIỆT • Hãy thử thách bản thân mỗi ngày!</p>
+</main>
+
+<script>
+const data={
+hard:[
+{q:"Từ nào viết đúng chính tả?",visual:["✍️","🔎"],answer:["sáng lạng"],hint:"Từ chỉ tương lai tươi sáng.",explain:"Cách viết đúng là “xán lạn”.",choices:["sáng lạng","xán lạn","sáng lạn","xán lạng"]},
+{q:"Thành ngữ nào nói về sự kiên trì?",visual:["🐜","🌳"],answer:["kiến tha lâu đầy tổ"],hint:"Một con vật nhỏ chăm chỉ tha mồi.",explain:"Kiến tha lâu đầy tổ nói về sự kiên trì.",choices:["kiến tha lâu đầy tổ","nước đến chân mới nhảy","đứng núi này trông núi nọ","đục nước béo cò"]},
+{q:"Từ nào đồng nghĩa với “dũng cảm”?",visual:["🦁","💪"],answer:["can đảm"],hint:"Từ có nghĩa là không sợ nguy hiểm.",explain:"Can đảm có nghĩa gần với dũng cảm.",choices:["can đảm","rụt rè","nhút nhát","lo lắng"]},
+{q:"“Có công mài sắt, có ngày...”?",visual:["🔨","⚒️"],answer:["nên kim"],hint:"Mài sắt để tạo thành vật nhỏ dùng khâu vá.",explain:"Câu tục ngữ khuyên chúng ta kiên trì.",choices:["nên kim","thành vàng","ra thép","nên dao"]},
+{q:"Từ trái nghĩa với “khiêm tốn” là gì?",visual:["👑","⬆️"],answer:["kiêu căng"],hint:"Thái độ tự cho mình hơn người.",explain:"Kiêu căng là trái nghĩa phù hợp.",choices:["kiêu căng","nhường nhịn","khiêm nhường","lễ phép"]},
+{q:"“Uống nước nhớ...”?",visual:["💧","🙏"],answer:["nguồn"],hint:"Nơi nước bắt đầu chảy ra.",explain:"Uống nước nhớ nguồn nhắc ta biết ơn.",choices:["nguồn","sông","suối","biển"]},
+{q:"Từ nào là danh từ?",visual:["📚","📝"],answer:["học sinh"],hint:"Từ chỉ người đi học.",explain:"Học sinh là danh từ chỉ người.",choices:["học sinh","chạy","đẹp","nhanh"]},
+{q:"“Lá lành đùm lá...”?",visual:["🍃","🤝"],answer:["rách"],hint:"Câu nói về việc giúp đỡ người khó khăn.",explain:"Lá lành đùm lá rách.",choices:["rách","non","khô","xanh"]},
+{q:"Từ nào viết đúng?",visual:["📖","✍️"],answer:["chân thành"],hint:"Thật lòng, không giả dối.",explain:"“Chân thành” là cách viết đúng.",choices:["chân thành","trân thành","chân thàng","trân thàng"]},
+{q:"“Thất bại là mẹ thành...”?",visual:["🌱","🏆"],answer:["công"],hint:"Điều đạt được sau nỗ lực.",explain:"Thất bại là mẹ thành công.",choices:["công","đạt","quả","tích"]},
+{q:"Từ nào chỉ hoạt động?",visual:["🏃","⚽"],answer:["nhảy"],hint:"Một hành động di chuyển khỏi mặt đất.",explain:"Nhảy là từ chỉ hoạt động.",choices:["nhảy","xinh","bầu trời","cái bàn"]},
+{q:"Từ trái nghĩa với “lạc quan”?",visual:["🌞","🌧️"],answer:["bi quan"],hint:"Luôn nghĩ đến điều xấu.",explain:"Bi quan trái nghĩa với lạc quan.",choices:["bi quan","vui vẻ","hy vọng","phấn khởi"]},
+{q:"“Ăn quả nhớ kẻ trồng...”?",visual:["🍎","🌳"],answer:["cây"],hint:"Bộ phận của cây có thân, cành, lá.",explain:"Câu tục ngữ nhắc nhớ người tạo ra thành quả.",choices:["cây","đất","vườn","quả"]},
+{q:"Từ nào là tính từ?",visual:["🌸","✨"],answer:["xinh đẹp"],hint:"Từ chỉ đặc điểm ngoại hình.",explain:"Xinh đẹp là từ chỉ đặc điểm.",choices:["xinh đẹp","học tập","học sinh","bàn ghế"]},
+{q:"“Gần mực thì đen, gần đèn thì...”?",visual:["🖋️","💡"],answer:["sáng"],hint:"Điều xảy ra khi ở gần nguồn sáng.",explain:"Câu tục ngữ nói về ảnh hưởng của môi trường.",choices:["sáng","tối","nóng","lạnh"]},
+{q:"Từ nào gần nghĩa với “siêng năng”?",visual:["📚","⏰"],answer:["chăm chỉ"],hint:"Chịu khó làm việc, học tập.",explain:"Siêng năng gần nghĩa với chăm chỉ.",choices:["chăm chỉ","lười biếng","hời hợt","cẩu thả"]},
+{q:"“Một cây làm chẳng nên non, ba cây chụm lại nên...”?",visual:["🌳","🤝"],answer:["hòn núi cao"],hint:"Câu nói về sức mạnh đoàn kết.",explain:"Đoàn kết giúp tạo nên sức mạnh lớn.",choices:["hòn núi cao","cánh rừng xanh","ngôi nhà lớn","con đường dài"]},
+{q:"Từ nào viết đúng chính tả?",visual:["📝","🔍"],answer:["sâu sắc"],hint:"Có ý nghĩa sâu xa, thấm thía.",explain:"“Sâu sắc” là cách viết đúng.",choices:["sâu sắc","xâu sắc","sâu xắc","xâu xắc"]},
+{q:"“Đi một ngày đàng, học một sàng...”?",visual:["🛣️","📚"],answer:["khôn"],hint:"Đi nhiều, biết nhiều điều.",explain:"Câu tục ngữ đề cao việc học hỏi từ trải nghiệm.",choices:["khôn","vui","sách","người"]},
+{q:"Từ trái nghĩa với “thật thà”?",visual:["🤥","🎭"],answer:["gian dối"],hint:"Không nói sự thật.",explain:"Gian dối trái nghĩa với thật thà.",choices:["gian dối","trung thực","ngay thẳng","chân thật"]}
+],
+rebus:[
+{q:"Hình gợi thành ngữ nào?",visual:["🐢","🏁","🐇"],answer:["chậm như rùa"],hint:"Một con vật nổi tiếng di chuyển chậm.",explain:"“Chậm như rùa” chỉ sự chậm chạp.",choices:["chậm như rùa","nhanh như chớp","một bước lên mây","đầu voi đuôi chuột"]},
+{q:"Đoán thành ngữ qua hình:",visual:["💧","🪨","穿"],answer:["nước chảy đá mòn"],hint:"Nước chảy lâu ngày làm mòn đá.",explain:"Kiên trì có thể tạo nên thay đổi lớn.",choices:["nước chảy đá mòn","nước đổ lá khoai","đá ném ao bèo","mưa thuận gió hòa"]},
+{q:"Hình ảnh gợi câu nào?",visual:["🐱","🐱","🐟"],answer:["mèo mù vớ cá rán"],hint:"May mắn bất ngờ dù không có khả năng.",explain:"Thành ngữ nói về sự may mắn tình cờ.",choices:["mèo mù vớ cá rán","mèo khen mèo dài đuôi","chó cắn áo rách","một mất một còn"]},
+{q:"Đoán câu tục ngữ:",visual:["🌧️","🌈","☀️"],answer:["sau cơn mưa trời lại sáng"],hint:"Khó khăn rồi sẽ qua.",explain:"Sau thời gian khó khăn sẽ có điều tốt đẹp.",choices:["sau cơn mưa trời lại sáng","mưa dầm thấm lâu","mưa sa bão táp","nắng mưa là việc của trời"]},
+{q:"Hình gợi ý thành ngữ nào?",visual:["🐌","🏃"],answer:["chậm như sên"],hint:"Một con vật bò rất chậm.",explain:"Dùng để chỉ người làm việc chậm.",choices:["chậm như sên","nhanh như gió","đi guốc trong bụng","đầu xuôi đuôi lọt"]},
+{q:"Đoán thành ngữ:",visual:["❤️","🪨"],answer:["trái tim sắt đá"],hint:"Tấm lòng cứng rắn, khó lay chuyển.",explain:"Thành ngữ chỉ sự cứng rắn, lạnh lùng.",choices:["trái tim sắt đá","trái tim nhân hậu","tim đập chân run","mở lòng đón nhận"]},
+{q:"Hình gợi câu nào?",visual:["📚","🐛"],answer:["mọt sách"],hint:"Người rất thích đọc sách.",explain:"“Mọt sách” chỉ người ham đọc sách.",choices:["mọt sách","sách mở mang","bút sa gà chết","học tài thi phận"]},
+{q:"Đoán thành ngữ:",visual:["🌙","☁️","🏙️"],answer:["mây mù che phủ"],hint:"Mây che kín khiến khó nhìn thấy.",explain:"Hình ảnh gợi sự mờ mịt.",choices:["mây mù che phủ","trăng thanh gió mát","một nắng hai sương","đầu đội trời chân đạp đất"]},
+{q:"Hình gợi câu tục ngữ:",visual:["🌱","🌳","🍎"],answer:["gieo nhân nào gặt quả nấy"],hint:"Trồng gì thì thu hoạch thứ đó.",explain:"Việc làm nào sẽ dẫn đến kết quả tương ứng.",choices:["gieo nhân nào gặt quả nấy","ăn quả nhớ kẻ trồng cây","cây ngay không sợ chết đứng","cành vàng lá ngọc"]},
+{q:"Đoán thành ngữ:",visual:["🐝","🌼","🍯"],answer:["chăm chỉ như ong"],hint:"Con vật cần mẫn hút mật hoa.",explain:"Hình ảnh gợi sự cần cù.",choices:["chăm chỉ như ong","ong bay bướm lượn","mật ngọt chết ruồi","nước đến chân mới nhảy"]},
+{q:"Hình gợi ý:",visual:["👣","🛣️","🏔️"],answer:["đường dài mới biết ngựa hay"],hint:"Phải trải qua lâu dài mới biết năng lực.",explain:"Thời gian sẽ chứng minh khả năng thật sự.",choices:["đường dài mới biết ngựa hay","đi guốc trong bụng","đứng núi này trông núi nọ","đầu xuôi đuôi lọt"]},
+{q:"Đoán câu thành ngữ:",visual:["🐟","🌊","🐠"],answer:["như cá gặp nước"],hint:"Ở đúng môi trường thì phát huy khả năng.",explain:"Chỉ người gặp điều kiện thuận lợi.",choices:["như cá gặp nước","cá lớn nuốt cá bé","cá mè một lứa","rồng bay phượng múa"]},
+{q:"Hình gợi câu nào?",visual:["🧱","🧱","🏠"],answer:["tích tiểu thành đại"],hint:"Góp từng phần nhỏ để tạo thành thứ lớn.",explain:"Tích lũy từng chút sẽ tạo nên thành quả.",choices:["tích tiểu thành đại","đứng mũi chịu sào","ăn chắc mặc bền","một mất một còn"]},
+{q:"Đoán thành ngữ:",visual:["🌞","⛈️","🌈"],answer:["sau cơn mưa trời lại sáng"],hint:"Sau giông bão sẽ có nắng.",explain:"Khó khăn rồi sẽ qua đi.",choices:["sau cơn mưa trời lại sáng","mưa dầm thấm lâu","nắng mưa thất thường","được mùa mất giá"]},
+{q:"Hình gợi thành ngữ:",visual:["👀","🧠","💭"],answer:["nhìn xa trông rộng"],hint:"Biết nghĩ đến tương lai.",explain:"Chỉ người có tầm nhìn xa.",choices:["nhìn xa trông rộng","nhắm mắt làm ngơ","mắt thấy tai nghe","mắt chữ A mồm chữ O"]},
+{q:"Đoán câu nào?",visual:["🤝","💪","🏆"],answer:["đoàn kết là sức mạnh"],hint:"Nhiều người cùng chung sức.",explain:"Sự đồng lòng giúp vượt qua khó khăn.",choices:["đoàn kết là sức mạnh","mạnh ai nấy làm","một mất một còn","được voi đòi tiên"]},
+{q:"Hình gợi thành ngữ:",visual:["🧊","🔥","💧"],answer:["nước chảy đá mòn"],hint:"Nước có thể làm mòn đá theo thời gian.",explain:"Kiên trì sẽ tạo ra kết quả.",choices:["nước chảy đá mòn","lửa thử vàng","đổ thêm dầu vào lửa","lửa gần rơm lâu ngày cũng bén"]},
+{q:"Đoán thành ngữ:",visual:["🌳","🌳","🌳"],answer:["rừng vàng biển bạc"],hint:"Tài nguyên quý giá của đất nước.",explain:"Cụm từ nói về sự giàu có của thiên nhiên.",choices:["rừng vàng biển bạc","cây cao bóng cả","lá lành đùm lá rách","cây ngay không sợ chết đứng"]},
+{q:"Hình gợi câu nào?",visual:["🕯️","🌑","✨"],answer:["trong cái khó ló cái khôn"],hint:"Khó khăn khiến con người nghĩ ra cách giải quyết.",explain:"Hoàn cảnh khó có thể giúp nảy sinh sáng kiến.",choices:["trong cái khó ló cái khôn","tắt đèn nhà ngói cũng như nhà tranh","đèn nhà ai nấy rạng","đi đêm có ngày gặp ma"]},
+{q:"Đoán thành ngữ:",visual:["👣","👣","🏁"],answer:["có công mài sắt có ngày nên kim"],hint:"Kiên trì thì việc khó cũng thành.",explain:"Bền bỉ sẽ giúp đạt được mục tiêu.",choices:["có công mài sắt có ngày nên kim","đầu voi đuôi chuột","đánh trống bỏ dùi","nước đến chân mới nhảy"]}
+]
+};
+
+let mode="hard",index=0,score=0,locked=false,hintsUsed=0;
+let musicVolume=.9,sfxVolume=.7,musicOn=false,soundOn=true,audioCtx=null,musicTimer=null;
+const $=id=>document.getElementById(id);
+try{$("highScore").textContent=localStorage.getItem("vuaTiengVietBest")||"0"}catch(e){}
+const normalize=s=>String(s).toLocaleLowerCase("vi").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/[^a-z0-9]/g,"");
+function audio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==="suspended")audioCtx.resume();return audioCtx}
+function tone(freq,duration=.18,type="sine",volume=.07,delay=0,bus="sfx"){
+ if(bus==="sfx"&&!soundOn)return;
+ try{const c=audio(),o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=freq;const level=volume*(bus==="music"?musicVolume:sfxVolume);g.gain.setValueAtTime(.0001,c.currentTime+delay);g.gain.exponentialRampToValueAtTime(Math.max(.0001,level),c.currentTime+delay+.02);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+delay+duration);o.connect(g);g.connect(c.destination);o.start(c.currentTime+delay);o.stop(c.currentTime+delay+duration+.03)}catch(e){}
+}
+function winSound(){[523,659,784,1047].forEach((f,i)=>tone(f,.28,"triangle",.09,i*.12))}
+function wrongSound(){tone(190,.2,"sawtooth",.04);tone(145,.24,"sawtooth",.035,.13)}
+function startMusic(){if(musicTimer)return;let n=0;const notes=[261.63,329.63,392,329.63,293.66,349.23,440,349.23];musicTimer=setInterval(()=>{if(musicOn){tone(notes[n%notes.length],.38,"sine",.22,0,"music");tone(notes[(n+2)%notes.length]*2,.25,"triangle",.09,.08,"music");n++}},430)}
+function stopMusic(){clearInterval(musicTimer);musicTimer=null}
+$("musicBtn").onclick=()=>{audio();musicOn=!musicOn;$("musicBtn").setAttribute("aria-pressed",musicOn);if(musicOn)startMusic();else stopMusic()};
+$("soundBtn").onclick=()=>{soundOn=!soundOn;$("soundBtn").setAttribute("aria-pressed",soundOn)};
+$("musicVolume").oninput=e=>{musicVolume=+e.target.value/100;$("musicVolLabel").textContent=e.target.value+"%"};
+$("sfxVolume").oninput=e=>{sfxVolume=+e.target.value/100;$("sfxVolLabel").textContent=e.target.value+"%"};
+$("helpBtn").onclick=()=>alert("Chọn một chế độ, đọc câu hỏi và chọn đáp án A/B/C/D. Trả lời đúng để nhận điểm. Có thể dùng gợi ý nếu cần!");
+$("settingsBtn").onclick=()=>alert("Điều chỉnh nhạc nền và hiệu ứng bằng các thanh âm lượng ở góc trên.");
+document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{audio();showMode(b.dataset.mode)});
+function showMode(m){mode=m;index=0;score=0;hintsUsed=0;$("home").classList.add("hide");$("game").classList.add("active");$("questionArea").classList.remove("hide");$("endArea").classList.add("hide");$("modeName").textContent=m==="hard"?"🧠 Chế độ Khó":"🖼️ Đuổi hình bắt chữ — SIÊU KHÓ";render()}
+function render(){
+ locked=false;const q=data[mode][index],total=data[mode].length;
+ $("count").textContent=`Câu ${index+1}/${total}`;$("bar").style.width=`${index/total*100}%`;$("qTitle").textContent=q.q;
+ $("qHint").textContent=mode==="rebus"?"Quan sát hình, suy luận và tìm đáp án.":"Đọc câu hỏi và chọn đáp án chính xác.";
+ $("clue").innerHTML="";
+ if(q.visual)q.visual.forEach(v=>{const d=document.createElement("div");d.className=(["➕","➡️","=","↔️","⚖️"].includes(v)?"symbol":(/^[A-ZÀ-Ỹ ]{2,}$/.test(v)?"wordtile":"picture"));d.textContent=v;$("clue").appendChild(d)});
+ else $("clue").innerHTML='<div class="wordtile">ĐỐ MẸO</div><div class="picture">🤔</div><div class="wordtile">SUY LUẬN</div>';
+ renderChoices(q);$("answer").value="";$("answer").disabled=false;$("feedback").textContent="";$("feedback").className="feedback";
+ $("score").textContent=`Điểm: ${score} · Gợi ý đã dùng: ${hintsUsed}`;$("hintBtn").disabled=false;$("hintBtn").classList.remove("hide");$("nextBtn").classList.add("hide");
+}
+function renderChoices(q){
+ const opts=[...q.choices];for(let i=opts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]]}
+ const box=$("choices");box.innerHTML="";
+ ["A","B","C","D"].forEach((letter,i)=>{const b=document.createElement("button");b.type="button";b.className="choice";b.innerHTML='<span class="letter">'+letter+'</span><span></span>';b.children[1].textContent=opts[i]||"Không có đáp án";b.onclick=()=>chooseAnswer(opts[i],b);box.appendChild(b)});
+}
+function correct(value){return data[mode][index].answer.some(x=>normalize(x)===normalize(value))}
+function reward(){
+ locked=true;const q=data[mode][index];score+=hintsUsed===0?10:6;
+ $("feedback").textContent="🎉 Chính xác! "+q.explain;$("feedback").className="feedback good";
+ $("choices").querySelectorAll("button").forEach(b=>{b.disabled=true;if(correct(b.children[1].textContent))b.classList.add("correct")});
+ $("answer").disabled=true;$("score").textContent=`Điểm: ${score} · Gợi ý đã dùng: ${hintsUsed}`;
+ $("hintBtn").disabled=true;$("nextBtn").classList.remove("hide");winSound();fireworks();toast("✨ Chính xác! +"+(hintsUsed===0?10:6)+" điểm");
+}
+function chooseAnswer(value,button){
+ if(locked)return;if(correct(value))reward();else{button.classList.add("wrong");button.disabled=true;$("feedback").textContent="Chưa đúng rồi! Thử lựa chọn khác nhé.";$("feedback").className="feedback bad";wrongSound()}
+}
+$("answerForm").onsubmit=e=>{e.preventDefault();if(locked)return;const value=$("answer").value.trim();if(!value)return;if(correct(value))reward();else{$("feedback").textContent="Chưa đúng rồi! Thử cách diễn đạt khác nhé.";$("feedback").className="feedback bad";wrongSound();$("answer").select()}};
+$("hintBtn").onclick=()=>{if(locked)return;hintsUsed++;$("feedback").textContent="💡 Gợi ý: "+data[mode][index].hint;$("feedback").className="feedback";$("score").textContent=`Điểm: ${score} · Gợi ý đã dùng: ${hintsUsed}`;$("hintBtn").disabled=true;tone(660,.15,"sine",.04)};
+$("nextBtn").onclick=()=>{if(index<data[mode].length-1){index++;hintsUsed=0;render()}else finish()};
+function finish(){
+ const best=Math.max(Number($("highScore").textContent)||0,score);$("highScore").textContent=best;
+ try{localStorage.setItem("vuaTiengVietBest",String(best))}catch(e){}
+ $("questionArea").classList.add("hide");$("endArea").classList.remove("hide");$("bar").style.width="100%";
+ const maxScore=data[mode].length*10;
+ $("resultText").textContent=`Bạn đạt ${score}/${maxScore} điểm. ${score>=maxScore*.8?"Xuất sắc! Vốn tiếng Việt của bạn rất đáng nể!":score>=maxScore*.5?"Khá tốt! Thử lại để phá kỷ lục nhé!":"Đừng nản — luyện thêm rồi quay lại chinh phục nhé!"}`;
+ winSound();fireworks(220);
+}
+$("againBtn").onclick=()=>showMode(mode);
+function goHome(){$("game").classList.remove("active");$("home").classList.remove("hide")}
+$("homeBtn").onclick=goHome;$("homeBtn2").onclick=goHome;
+function toast(msg){$("toast").textContent=msg;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),1400)}
+const canvas=$("fx"),ctx=canvas.getContext("2d");let particles=[],raf=0;
+function resize(){const dpr=Math.min(devicePixelRatio||1,2);canvas.width=innerWidth*dpr;canvas.height=innerHeight*dpr;canvas.style.width=innerWidth+"px";canvas.style.height=innerHeight+"px";ctx.setTransform(dpr,0,0,dpr,0,0)}
+addEventListener("resize",resize);resize();
+function fireworks(amount=100){
+ const colors=["#ffd166","#6ef0c2","#ff7da8","#7eb7ff","#ffffff"];
+ for(let k=0;k<3;k++)setTimeout(()=>{const x=innerWidth*(.2+Math.random()*.6),y=innerHeight*(.18+Math.random()*.42);for(let i=0;i<amount/3;i++){const a=Math.random()*Math.PI*2,s=1.5+Math.random()*5;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:45+Math.random()*30,max:75,color:colors[Math.floor(Math.random()*colors.length)],r:1+Math.random()*2})}},k*180);
+ if(!raf)animate();
+}
+function animate(){
+ ctx.clearRect(0,0,innerWidth,innerHeight);particles=particles.filter(p=>p.life>0);
+ for(const p of particles){p.x+=p.vx;p.y+=p.vy;p.vy+=.045;p.vx*=.99;p.life--;ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill()}
+ ctx.globalAlpha=1;if(particles.length)raf=requestAnimationFrame(animate);else{cancelAnimationFrame(raf);raf=0;ctx.clearRect(0,0,innerWidth,innerHeight)}
+}
+</script>
+</body>
+</html>
